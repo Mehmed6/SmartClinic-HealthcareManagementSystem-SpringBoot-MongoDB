@@ -5,6 +5,7 @@ import com.doganmehmet.app.dto.response.RegisterResponse;
 import com.doganmehmet.app.entity.User;
 import com.doganmehmet.app.exception.ApiException;
 import com.doganmehmet.app.exception.MyError;
+import com.doganmehmet.app.mapper.IUserMapper;
 import com.doganmehmet.app.repository.IRoleRepository;
 import com.doganmehmet.app.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,23 +20,26 @@ public class RegisterService {
     private final IUserRepository m_userRepository;
     private final IRoleRepository m_roleRepository;
     private final PasswordEncoder m_passwordEncoder;
+    private final IUserMapper m_userMapper;
 
     public RegisterResponse register(RegisterRequest registerRequest)
     {
         if (m_userRepository.findByUsername(registerRequest.getUsername()).isPresent())
             throw new ApiException(MyError.USER_ALREADY_EXISTS);
 
-        var user = new User();
-        user.setUsername(registerRequest.getUsername());
+        var user = m_userMapper.toUser(registerRequest);
         user.setPassword(m_passwordEncoder.encode(registerRequest.getPassword()));
-        user.setEmail(registerRequest.getEmail());
 
-        var role = registerRequest.getRoles().stream()
-                        .map(roleName -> m_roleRepository.findByName(roleName.getName())
+        var roles = registerRequest.getRoles().stream()
+                .peek(userRole -> {
+                    if (userRole.getName().equalsIgnoreCase("ADMIN"))
+                        throw new ApiException(MyError.ADMIN_ROLE_NOT_ALLOWED);
+                })
+                        .map(roleName -> m_roleRepository.findByName(roleName.getName().toUpperCase())
                                 .orElseThrow(() -> new ApiException(MyError.ROLE_NOT_FOUND, roleName.getName())))
                                 .collect(Collectors.toSet());
 
-        user.setRoles(role);
+        user.setRoles(roles);
         m_userRepository.save(user);
 
         return new RegisterResponse(user.getUsername(),
