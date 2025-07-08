@@ -6,6 +6,7 @@ import com.doganmehmet.app.service.LeaveRequestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,31 +18,31 @@ public class LeaveRequestController {
 
     private final LeaveRequestService m_leaveRequestService;
 
-    @PostMapping("save")
+    @PostMapping
     public ResponseEntity<LeaveRequestDTO> save(@Valid @RequestBody LeaveRequestSaveDTO request)
     {
         return ResponseEntity.ok(m_leaveRequestService.save(request));
     }
 
-    @GetMapping("find/id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<LeaveRequestDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(m_leaveRequestService.findLeaveRequestById(id));
     }
 
-    @GetMapping("find/doctor/{doctorId}")
+    @GetMapping("/doctor/{doctorId}")
     public ResponseEntity<List<LeaveRequestDTO>> findByDoctorId(@PathVariable Long doctorId)
     {
         return ResponseEntity.ok(m_leaveRequestService.findLeaveRequestByDoctorId(doctorId));
     }
 
-    @GetMapping("find/status")
+    @GetMapping("/status")
     public ResponseEntity<List<LeaveRequestDTO>> findByStatus(@RequestParam String status)
     {
         return ResponseEntity.ok(m_leaveRequestService.findLeaveRequestByStatus(status));
     }
 
-    @GetMapping("findAll")
+    @GetMapping
     public ResponseEntity<List<LeaveRequestDTO>> findAll()
     {
         return ResponseEntity.ok(m_leaveRequestService.findAllLeaveRequests());
@@ -65,14 +66,16 @@ public class LeaveRequestController {
         return ResponseEntity.ok(m_leaveRequestService.updateLeaveRequest(id, request));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id)
     {
         m_leaveRequestService.deleteLeaveRequestById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("deleteAll")
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAll()
     {
         m_leaveRequestService.deleteAllLeaveRequests();

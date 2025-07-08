@@ -6,6 +6,7 @@ import com.doganmehmet.app.service.WorkScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
@@ -56,13 +57,15 @@ public class WorkScheduleController {
         return ResponseEntity.ok(m_workScheduleService.updateWorkSchedule(workScheduleId, request));
     }
     @DeleteMapping("/{workScheduleId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long workScheduleId)
     {
         m_workScheduleService.deleteWorkScheduleById(workScheduleId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/all")
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAll()
     {
         m_workScheduleService.deleteAllWorkSchedules();

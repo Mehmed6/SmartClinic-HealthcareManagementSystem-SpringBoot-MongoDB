@@ -6,6 +6,7 @@ import com.doganmehmet.app.service.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserProfileController {
     private final UserProfileService m_userProfileService;
 
-    @PostMapping("save")
+    @PostMapping
     public ResponseEntity<UserProfileDTO> save(@Valid @RequestBody UserProfileRequest request)
     {
         return ResponseEntity.ok(m_userProfileService.save(request));
     }
 
-    @GetMapping("id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserProfileDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(m_userProfileService.findUserProfileById(id));
@@ -45,17 +46,26 @@ public class UserProfileController {
         return ResponseEntity.ok(m_userProfileService.updateUserProfile(request));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id)
     {
         m_userProfileService.deleteUserProfileById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("delete/current")
+    @DeleteMapping("/current")
     public ResponseEntity<Void> deleteCurrentUserProfile()
     {
         m_userProfileService.deleteUserProfile();
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteAll()
+    {
+        m_userProfileService.deleteAll();
         return ResponseEntity.noContent().build();
     }
 }

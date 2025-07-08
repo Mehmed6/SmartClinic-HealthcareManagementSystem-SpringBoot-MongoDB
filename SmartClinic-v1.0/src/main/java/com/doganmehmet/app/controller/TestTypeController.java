@@ -6,6 +6,7 @@ import com.doganmehmet.app.service.TestTypeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class TestTypeController {
         return ResponseEntity.ok(m_testTypeService.findTestTypeByName(name));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<TestTypeDTO>> findAll()
     {
         return ResponseEntity.ok(m_testTypeService.findAllTestTypes());
@@ -53,14 +54,16 @@ public class TestTypeController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/name/{name}")
+    @DeleteMapping("/{name}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteByName(@PathVariable String name)
     {
         m_testTypeService.deleteTestTypeByName(name);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/all")
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAll()
     {
         m_testTypeService.deleteAllTestTypes();

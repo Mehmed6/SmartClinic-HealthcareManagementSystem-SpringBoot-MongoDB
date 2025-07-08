@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -63,6 +64,7 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/{invoiceId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long invoiceId)
     {
         m_invoiceService.deleteInvoiceById(invoiceId);
@@ -70,6 +72,7 @@ public class InvoiceController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAll()
     {
         m_invoiceService.deleteAllInvoices();

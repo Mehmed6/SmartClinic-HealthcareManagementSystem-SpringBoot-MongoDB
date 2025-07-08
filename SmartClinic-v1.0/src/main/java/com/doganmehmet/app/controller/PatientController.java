@@ -7,6 +7,7 @@ import com.doganmehmet.app.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class PatientController {
 
     private final PatientService m_patientService;
 
-    @PostMapping("save")
+    @PostMapping
     public ResponseEntity<PatientDTO> save(@Valid @RequestBody PatientRequest request)
     {
         return ResponseEntity.ok(m_patientService.save(request));
@@ -30,13 +31,14 @@ public class PatientController {
         return ResponseEntity.ok(m_patientService.savePatientBySecretary(request));
     }
 
-    @GetMapping("/find/id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<PatientDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(m_patientService.findPatientById(id));
     }
 
-    @GetMapping("/findAll")
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PatientDTO>> findAll()
     {
         return ResponseEntity.ok(m_patientService.findAllPatients());
@@ -48,14 +50,16 @@ public class PatientController {
         return ResponseEntity.ok(m_patientService.updatePatient(request));
     }
 
-    @DeleteMapping("/delete/id/{id}")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable Long id)
     {
         m_patientService.deletePatientById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/deleteAll")
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAll()
     {
         m_patientService.deleteAllPatients();

@@ -6,6 +6,7 @@ import com.doganmehmet.app.service.LaboratoryTestResultService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,12 +60,14 @@ public class LaboratoryTestResultController {
     }
 
     @DeleteMapping("/{laboratoryTestResultId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable String laboratoryTestResultId)
     {
         m_laboratoryTestResultService.deleteLaboratoryTestResultById(laboratoryTestResultId);
         return ResponseEntity.noContent().build();
     }
-    @DeleteMapping("/all")
+    @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAll()
     {
         m_laboratoryTestResultService.deleteAllLaboratoryTestResults();

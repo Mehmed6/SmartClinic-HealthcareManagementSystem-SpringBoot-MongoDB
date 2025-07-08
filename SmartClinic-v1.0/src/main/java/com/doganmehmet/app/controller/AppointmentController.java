@@ -6,6 +6,7 @@ import com.doganmehmet.app.service.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,6 +72,7 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/{appointmentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long appointmentId)
     {
         m_appointmentService.deleteAppointmentById(appointmentId);
@@ -78,12 +80,14 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/patient/{patientId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAllByPatientId(@PathVariable Long patientId)
     {
         m_appointmentService.deleteAllAppointmentsByPatientId(patientId);
         return ResponseEntity.noContent().build();
     }
     @DeleteMapping("/doctor/{doctorId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAllByDoctorId(@PathVariable Long doctorId)
     {
         m_appointmentService.deleteAllAppointmentsByDoctorId(doctorId);
@@ -91,6 +95,7 @@ public class AppointmentController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAll()
     {
         m_appointmentService.deleteAllAppointments();
