@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/register")
+@RequestMapping("/api/v1/register")
 @RequiredArgsConstructor
 public class RegisterController {
     private final RegisterService m_registerService;
