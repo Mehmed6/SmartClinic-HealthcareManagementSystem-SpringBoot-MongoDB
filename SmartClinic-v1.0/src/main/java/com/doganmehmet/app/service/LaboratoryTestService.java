@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.LaboratoryTestRequest;
 import com.doganmehmet.app.dto.response.LaboratoryTestDTO;
 import com.doganmehmet.app.entity.LaboratoryTest;
@@ -47,6 +48,11 @@ public class LaboratoryTestService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Create Laboratory Test",
+            entity = "LaboratoryTest",
+            description = "Laboratory test created successfully"
+    )
     public LaboratoryTestDTO save(LaboratoryTestRequest request)
     {
         var laboratoryTest = m_laboratoryTestMapper.toLaboratoryTest(request);
@@ -58,6 +64,11 @@ public class LaboratoryTestService {
         return convertToDTO(m_laboratoryTestRepository.save(laboratoryTest));
     }
 
+    @Auditable(
+            action = "Find Laboratory Test by ID",
+            entity = "LaboratoryTest",
+            description = "Laboratory test found successfully"
+    )
     public LaboratoryTestDTO findLaboratoryTestById(Long laboratoryTestId)
     {
         var laboratoryTest = m_laboratoryTestRepository.findById(laboratoryTestId)
@@ -66,6 +77,11 @@ public class LaboratoryTestService {
         return convertToDTO(laboratoryTest);
     }
 
+    @Auditable(
+            action = "Find Laboratory Tests by Test Type Name",
+            entity = "LaboratoryTest",
+            description = "Laboratory tests found successfully by test type name"
+    )
     public List<LaboratoryTestDTO> findAllLaboratoryTestsByTestTypeName(String testTypeName)
     {
         var laboratoryTests = m_laboratoryTestRepository.findAllByTestType_Name(testTypeName);
@@ -73,6 +89,11 @@ public class LaboratoryTestService {
         return validateAndMapToDTO(laboratoryTests);
     }
 
+    @Auditable(
+            action = "Find Laboratory Tests by Patient ID",
+            entity = "LaboratoryTest",
+            description = "Laboratory tests found successfully by patient ID"
+    )
     public List<LaboratoryTestDTO> findAllLaboratoryTestsByPatientId(Long patientId)
     {
         var laboratoryTests = m_laboratoryTestRepository.findAllByPatientId(patientId);
@@ -80,6 +101,11 @@ public class LaboratoryTestService {
         return validateAndMapToDTO(laboratoryTests);
     }
 
+    @Auditable(
+            action = "Find Laboratory Tests by Doctor ID",
+            entity = "LaboratoryTest",
+            description = "Laboratory tests found successfully by doctor ID"
+    )
     public List<LaboratoryTestDTO> findAllLaboratoryTestsByDoctorId(Long doctorId)
     {
         var laboratoryTests = m_laboratoryTestRepository.findAllByDoctorId(doctorId);
@@ -87,6 +113,11 @@ public class LaboratoryTestService {
         return validateAndMapToDTO(laboratoryTests);
     }
 
+@Auditable(
+            action = "Find Laboratory Tests by Status",
+            entity = "LaboratoryTest",
+            description = "Laboratory tests found successfully by status"
+    )
     public List<LaboratoryTestDTO> findAllLaboratoryTestsByStatus(String testStatus)
     {
         try {
@@ -100,6 +131,11 @@ public class LaboratoryTestService {
         }
     }
 
+@Auditable(
+            action = "Find All Laboratory Tests",
+            entity = "LaboratoryTest",
+            description = "All laboratory tests found successfully"
+    )
     public List<LaboratoryTestDTO> findAllLaboratoryTests()
     {
         var laboratoryTests = m_laboratoryTestRepository.findAll();
@@ -107,6 +143,11 @@ public class LaboratoryTestService {
         return validateAndMapToDTO(laboratoryTests);
     }
 
+    @Auditable(
+            action = "Complete Laboratory Test",
+            entity = "LaboratoryTest",
+            description = "Laboratory test completed successfully"
+    )
     public LaboratoryTestDTO completeLaboratoryTest(Long laboratoryTestId)
     {
         var laboratoryTest = m_laboratoryTestRepository.findById(laboratoryTestId)
@@ -118,6 +159,11 @@ public class LaboratoryTestService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Update Laboratory Test",
+            entity = "LaboratoryTest",
+            description = "Laboratory test updated successfully"
+    )
     public LaboratoryTestDTO updateLaboratoryTest(Long laboratoryTestId, LaboratoryTestRequest request)
     {
         var laboratoryTest = m_laboratoryTestRepository.findById(laboratoryTestId)
@@ -132,6 +178,11 @@ public class LaboratoryTestService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete Laboratory Test by ID",
+            entity = "LaboratoryTest",
+            description = "Laboratory test deleted successfully"
+    )
     public void deleteLaboratoryTestById(Long laboratoryTestId)
     {
         var laboratoryTest = m_laboratoryTestRepository.findById(laboratoryTestId)
@@ -141,6 +192,11 @@ public class LaboratoryTestService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete All Laboratory Tests",
+            entity = "LaboratoryTest",
+            description = "All laboratory tests deleted successfully"
+    )
     public void deleteAllLaboratoryTests()
     {
         m_laboratoryTestRepository.deleteAll();

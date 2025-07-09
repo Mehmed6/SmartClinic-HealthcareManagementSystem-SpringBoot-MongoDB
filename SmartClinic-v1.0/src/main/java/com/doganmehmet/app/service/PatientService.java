@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.PatientRequest;
 import com.doganmehmet.app.dto.request.PatientSaveBySecretaryRequest;
 import com.doganmehmet.app.dto.response.PatientDTO;
@@ -29,6 +30,11 @@ public class PatientService {
     private final IPatientMapper m_patientMapper;
     private final CurrentUserProfileHelper m_currentUserProfileHelper;
 
+    @Auditable(
+            action = "Create Patient",
+            entity = "Patient",
+            description = "Patient created successfully"
+    )
     public PatientDTO save(PatientRequest request)
     {
         var patient = m_patientMapper.toPatient(request);
@@ -38,6 +44,11 @@ public class PatientService {
         return m_patientMapper.toPatientDTO(m_patientRepository.save(patient));
     }
 
+    @Auditable(
+            action = "Create Patient by Secretary",
+            entity = "Patient",
+            description = "Patient created successfully by secretary"
+    )
     public PatientDTO savePatientBySecretary(PatientSaveBySecretaryRequest request)
     {
         var userProfile = m_currentUserProfileHelper.saveUserProfileBySecretary(request);
@@ -46,17 +57,32 @@ public class PatientService {
         return m_patientMapper.toPatientDTO(m_patientRepository.save(patient));
     }
 
-    public PatientDTO findPatientById(Long id)
+    @Auditable(
+            action = "Find Patient by ID",
+            entity = "Patient",
+            description = "Patient found successfully"
+    )
+    public PatientDTO findPatientById(Long patientId)
     {
-        return m_patientMapper.toPatientDTO(m_patientRepository.findById(id)
+        return m_patientMapper.toPatientDTO(m_patientRepository.findById(patientId)
                 .orElseThrow(() -> new ApiException(MyError.PATIENT_NOT_FOUND)));
     }
 
+    @Auditable(
+            action = "Find All Patients",
+            entity = "Patient",
+            description = "All patients found successfully"
+    )
     public List<PatientDTO> findAllPatients()
     {
         return m_patientMapper.toPatientDTOs(m_patientRepository.findAll());
     }
 
+    @Auditable(
+            action = "Update Patient",
+            entity = "Patient",
+            description = "Patient updated successfully"
+    )
     public PatientDTO updatePatient(PatientRequest request)
     {
         var patient = m_currentUserProfileHelper.getCurrentUserProfile().getPatient();
@@ -67,6 +93,11 @@ public class PatientService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete Patient by ID",
+            entity = "Patient",
+            description = "Patient deleted successfully"
+    )
     public void deletePatientById(Long id)
     {
         var patient = m_patientRepository.findById(id)
@@ -77,6 +108,11 @@ public class PatientService {
        m_patientRepository.delete(patient);
     }
     @Transactional
+    @Auditable(
+            action = "Delete All Patients",
+            entity = "Patient",
+            description = "All patients deleted successfully"
+    )
     public void deleteAllPatients()
     {
         findAllPatients().forEach(patient -> patient.setUserProfile(null));

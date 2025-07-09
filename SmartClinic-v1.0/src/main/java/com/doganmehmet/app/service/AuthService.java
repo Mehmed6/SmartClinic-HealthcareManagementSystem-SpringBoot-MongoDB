@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.AuthRequest;
 import com.doganmehmet.app.dto.response.AuthResponse;
 import com.doganmehmet.app.entity.JwtToken;
@@ -26,6 +27,11 @@ public class AuthService {
     private final IJwtTokenRepository m_jwtTokenRepository;
     private final IRefreshTokenRepository m_refreshTokenRepository;
 
+    @Auditable(
+            action = "User Login",
+            entity = "User",
+            description = "User logged in successfully"
+    )
     public AuthResponse login(AuthRequest authRequest)
     {
         var user = m_userRepository.findByUsername(authRequest.getUsername())

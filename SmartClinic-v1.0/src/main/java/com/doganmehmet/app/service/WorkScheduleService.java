@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.WorkScheduleRequest;
 import com.doganmehmet.app.dto.response.WorkScheduleDTO;
 import com.doganmehmet.app.exception.ApiException;
@@ -22,6 +23,11 @@ public class WorkScheduleService {
     private final IDoctorRepository m_doctorRepository;
 
     @Transactional
+    @Auditable(
+            action = "Create Work Schedule",
+            entity = "WorkSchedule",
+            description = "Work schedule created successfully"
+    )
     public WorkScheduleDTO save(WorkScheduleRequest request)
     {
         var doctor = m_doctorRepository.findById(request.getDoctorId())
@@ -38,6 +44,11 @@ public class WorkScheduleService {
 
     }
 
+    @Auditable(
+            action = "Find Work Schedule by ID",
+            entity = "WorkSchedule",
+            description = "Work schedule found successfully"
+    )
     public WorkScheduleDTO findWorkScheduleById(Long id)
     {
         var workSchedule = m_workScheduleRepository.findById(id)
@@ -46,6 +57,11 @@ public class WorkScheduleService {
         return m_workScheduleMapper.toWorkScheduleDTO(workSchedule);
     }
 
+    @Auditable(
+            action = "Find Work Schedules by Doctor ID",
+            entity = "WorkSchedule",
+            description = "Work schedules found successfully by doctor ID"
+    )
     public List<WorkScheduleDTO> findAllWorkSchedulesByDoctorId(Long doctorId)
     {
        var doctor = m_doctorRepository.findById(doctorId)
@@ -59,6 +75,11 @@ public class WorkScheduleService {
          return m_workScheduleMapper.toWorkScheduleDTOs(workSchedules);
     }
 
+    @Auditable(
+            action = "Find Work Schedules by Start Time",
+            entity = "WorkSchedule",
+            description = "Work schedules found successfully by start time"
+    )
     public List<WorkScheduleDTO> findAllWorkSchedulesByStartTime(LocalTime startTime)
     {
         var workSchedules = m_workScheduleRepository.findAllByStartTime(startTime);
@@ -69,6 +90,11 @@ public class WorkScheduleService {
         return m_workScheduleMapper.toWorkScheduleDTOs(workSchedules);
     }
 
+    @Auditable(
+            action = "Find Work Schedules by End Time",
+            entity = "WorkSchedule",
+            description = "Work schedules found successfully by end time"
+    )
     public List<WorkScheduleDTO> findAllWorkSchedulesByEndTime(LocalTime endTime)
     {
         var workSchedules = m_workScheduleRepository.findAllByEndTime(endTime);
@@ -79,6 +105,11 @@ public class WorkScheduleService {
         return m_workScheduleMapper.toWorkScheduleDTOs(workSchedules);
     }
 
+    @Auditable(
+            action = "Find All Work Schedules",
+            entity = "WorkSchedule",
+            description = "All work schedules found successfully"
+    )
     public List<WorkScheduleDTO> findAllWorkSchedules()
     {
         var workSchedules = m_workScheduleRepository.findAll();
@@ -90,6 +121,11 @@ public class WorkScheduleService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Update Work Schedule",
+            entity = "WorkSchedule",
+            description = "Work schedule updated successfully"
+    )
     public WorkScheduleDTO updateWorkSchedule(Long id, WorkScheduleRequest request)
     {
         var workSchedule = m_workScheduleRepository.findById(id)
@@ -110,6 +146,11 @@ public class WorkScheduleService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete Work Schedule by ID",
+            entity = "WorkSchedule",
+            description = "Work schedule deleted successfully"
+    )
     public void deleteWorkScheduleById(Long id)
     {
         var workSchedule = m_workScheduleRepository.findById(id)
@@ -119,6 +160,10 @@ public class WorkScheduleService {
     }
 
      @Transactional
+    @Auditable(
+            action = "Delete All Work Schedules",
+            entity = "WorkSchedule",
+            description = "All work schedules deleted successfully")
     public void deleteAllWorkSchedules()
     {
         m_workScheduleRepository.deleteAll();

@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.InvoiceRequest;
 import com.doganmehmet.app.dto.response.InvoiceDTO;
 import com.doganmehmet.app.entity.Invoice;
@@ -35,6 +36,11 @@ public class InvoiceService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Create Invoice",
+            entity = "Invoice",
+            description = "Invoice created successfully"
+    )
     public InvoiceDTO save(InvoiceRequest request)
     {
         var patient = m_patientRepository.findById(request.getPatientId())
@@ -53,6 +59,11 @@ public class InvoiceService {
         return m_invoiceMapper.toInvoiceDTO(m_invoiceRepository.save(invoice));
     }
 
+    @Auditable(
+            action = "Find Invoice by ID",
+            entity = "Invoice",
+            description = "Invoice found successfully"
+    )
     public InvoiceDTO findInvoiceById(Long id)
     {
         var invoice = m_invoiceRepository.findById(id)
@@ -61,6 +72,11 @@ public class InvoiceService {
         return m_invoiceMapper.toInvoiceDTO(invoice);
     }
 
+    @Auditable(
+            action = "Find Invoices by Patient ID",
+            entity = "Invoice",
+            description = "Invoices found successfully by patient ID"
+    )
     public List<InvoiceDTO> findAllInvoicesByPatientId(Long patientId)
     {
         var patient = m_patientRepository.findById(patientId)
@@ -69,11 +85,21 @@ public class InvoiceService {
         return mapInvoicesOrThrow(m_invoiceRepository.findAllByPatient(patient));
     }
 
+    @Auditable(
+            action = "Find Invoices by Appointment ID",
+            entity = "Invoice",
+            description = "Invoices found successfully by appointment ID"
+    )
     public List<InvoiceDTO> findAllInvoicesByIssueDate(LocalDate issueDate)
     {
         return mapInvoicesOrThrow(m_invoiceRepository.findAllByIssuedDate(issueDate));
     }
 
+    @Auditable(
+            action = "Find Invoices by Status",
+            entity = "Invoice",
+            description = "Invoices found successfully by status"
+    )
     public List<InvoiceDTO> findAllInvoicesByStatus(String invoiceStatus)
     {
         try {
@@ -85,12 +111,22 @@ public class InvoiceService {
         }
     }
 
+    @Auditable(
+            action = "Find All Invoices",
+            entity = "Invoice",
+            description = "All invoices found successfully"
+    )
     public List<InvoiceDTO> findAllInvoices()
     {
         return mapInvoicesOrThrow(m_invoiceRepository.findAll());
     }
 
     @Transactional
+    @Auditable(
+            action = "Update Invoice",
+            entity = "Invoice",
+            description = "Invoice updated successfully"
+    )
     public InvoiceDTO updateInvoice(Long invoiceId, InvoiceRequest request)
     {
         var invoice = m_invoiceRepository.findById(invoiceId)
@@ -113,6 +149,11 @@ public class InvoiceService {
         return m_invoiceMapper.toInvoiceDTO(m_invoiceRepository.save(invoice));
     }
     @Transactional
+@Auditable(
+            action = "Delete Invoice by ID",
+            entity = "Invoice",
+            description = "Invoice deleted successfully"
+    )
     public void deleteInvoiceById(Long invoiceId)
     {
         if (!m_invoiceRepository.existsById(invoiceId))
@@ -121,6 +162,11 @@ public class InvoiceService {
         m_invoiceRepository.deleteById(invoiceId);
     }
     @Transactional
+@Auditable(
+            action = "Delete All Invoices",
+            entity = "Invoice",
+            description = "All invoices deleted successfully"
+    )
     public void deleteAllInvoices()
     {
         m_invoiceRepository.deleteAll();

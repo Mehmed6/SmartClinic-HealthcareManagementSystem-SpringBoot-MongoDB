@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.AppointmentRequest;
 import com.doganmehmet.app.dto.response.AppointmentDTO;
 import com.doganmehmet.app.entity.Appointment;
@@ -44,6 +45,12 @@ public class AppointmentService {
         return m_appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new ApiException(MyError.APPOINTMENT_NOT_FOUND));
     }
+
+    @Auditable(
+            action = "Create Appointment",
+            entity = "Appointment",
+            description = "Appointment created successfully"
+    )
     public AppointmentDTO save(AppointmentRequest request)
     {
         var appointment = m_appointmentMapper.toAppointment(request);
@@ -58,6 +65,11 @@ public class AppointmentService {
         return m_appointmentMapper.toAppointmentDTO(m_appointmentRepository.save(appointment));
     }
 
+    @Auditable(
+            action = "Find Appointment by ID",
+            entity = "Appointment",
+            description = "Appointment found successfully"
+    )
     public AppointmentDTO findAppointmentById(Long appointmentId)
     {
         var appointment = findAppointmentOrThrow(appointmentId);
@@ -65,6 +77,11 @@ public class AppointmentService {
         return m_appointmentMapper.toAppointmentDTO(appointment);
     }
 
+    @Auditable(
+            action = "Find Appointments by Patient ID",
+            entity = "Appointment",
+            description = "Appointments found successfully by patient ID"
+    )
     public List<AppointmentDTO> findAllAppointmentsByPatientId(Long patientId)
     {
         var patient = m_patientRepository.findById(patientId)
@@ -74,6 +91,11 @@ public class AppointmentService {
                 m_appointmentRepository.findAllByPatient((patient)));
     }
 
+    @Auditable(
+            action = "Find Appointments by Doctor ID",
+            entity = "Appointment",
+            description = "Appointments found successfully by doctor ID"
+    )
     public List<AppointmentDTO> findAllAppointmentsByDoctorId(Long doctorId)
     {
         var doctor = findDoctorOrThrow(doctorId);
@@ -82,6 +104,11 @@ public class AppointmentService {
                 m_appointmentRepository.findAllByDoctor(doctor));
     }
 
+    @Auditable(
+            action = "Find Appointments by Status",
+            entity = "Appointment",
+            description = "Appointments found successfully by status"
+    )
     public List<AppointmentDTO> findAllAppointmentsByStatus(String status)
     {
         try {
@@ -94,12 +121,22 @@ public class AppointmentService {
         }
     }
 
+    @Auditable(
+            action = "Find All Appointments",
+            entity = "Appointment",
+            description = "All appointments found successfully"
+    )
     public List<AppointmentDTO> findAllAppointments()
     {
         return m_appointmentMapper.toAppointmentDTOs(
                 m_appointmentRepository.findAll());
     }
 
+    @Auditable(
+            action = "Complete Appointment",
+            entity = "Appointment",
+            description = "Appointment completed successfully"
+    )
     public AppointmentDTO completeAppointment(Long appointmentId)
     {
         var appointment = findAppointmentOrThrow(appointmentId);
@@ -112,6 +149,11 @@ public class AppointmentService {
         return m_appointmentMapper.toAppointmentDTO( m_appointmentRepository.save(appointment));
     }
 
+    @Auditable(
+            action = "Cancel Appointment",
+            entity = "Appointment",
+            description = "Appointment cancelled successfully"
+    )
     public AppointmentDTO cancelAppointment(Long appointmentId)
     {
         var appointment = findAppointmentOrThrow(appointmentId);
@@ -123,6 +165,11 @@ public class AppointmentService {
         return m_appointmentMapper.toAppointmentDTO(m_appointmentRepository.save(appointment));
     }
 
+    @Auditable(
+            action = "Update Appointment",
+            entity = "Appointment",
+            description = "Appointment updated successfully"
+    )
     public AppointmentDTO updateAppointment(Long appointmentId, AppointmentRequest request)
     {
         var appointment = findAppointmentOrThrow(appointmentId);
@@ -137,12 +184,22 @@ public class AppointmentService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete Appointment by ID",
+            entity = "Appointment",
+            description = "Appointment deleted successfully by ID"
+    )
     public void deleteAppointmentById(Long appointmentId)
     {
         m_appointmentRepository.delete(findAppointmentOrThrow(appointmentId));
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete All Appointments by Patient ID",
+            entity = "Appointment",
+            description = "All appointments deleted successfully by patient ID"
+    )
     public void deleteAllAppointmentsByPatientId(Long patientId)
     {
         var patient = m_patientRepository.findById(patientId)
@@ -152,12 +209,22 @@ public class AppointmentService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete All Appointments by Doctor ID",
+            entity = "Appointment",
+            description = "All appointments deleted successfully by doctor ID"
+    )
     public void deleteAllAppointmentsByDoctorId(Long doctorId)
     {
         m_appointmentRepository.deleteAllByDoctor(findDoctorOrThrow(doctorId));
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete All Appointments",
+            entity = "Appointment",
+            description = "All appointments deleted successfully"
+    )
     public void deleteAllAppointments()
     {
         m_appointmentRepository.deleteAll();

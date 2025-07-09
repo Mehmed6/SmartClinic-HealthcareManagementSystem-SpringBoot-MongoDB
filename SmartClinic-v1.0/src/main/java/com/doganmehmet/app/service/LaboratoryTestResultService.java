@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.LaboratoryTestResultRequest;
 import com.doganmehmet.app.dto.response.LaboratoryTestDTO;
 import com.doganmehmet.app.dto.response.LaboratoryTestResultDTO;
@@ -50,6 +51,11 @@ public class LaboratoryTestResultService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Save Laboratory Test Result",
+            entity = "LaboratoryTestResult",
+            description = "Laboratory test result saved successfully"
+    )
     public LaboratoryTestResultDTO save(LaboratoryTestResultRequest request)
     {
         if (!m_doctorRepository.existsById(request.getDoctorId()))
@@ -65,6 +71,11 @@ public class LaboratoryTestResultService {
         return convertToDTO(savedResult);
     }
 
+    @Auditable(
+            action = "Find Laboratory Test Result by ID",
+            entity = "LaboratoryTestResult",
+            description = "Laboratory test result found successfully"
+    )
     public LaboratoryTestResultDTO findLaboratoryTestResultById(String id)
     {
         var result = m_laboratoryTestResultRepository.findById(id)
@@ -73,6 +84,11 @@ public class LaboratoryTestResultService {
         return convertToDTO(result);
     }
 
+    @Auditable(
+            action = "Find Laboratory Test Result by Doctor ID",
+            entity = "LaboratoryTestResult",
+            description = "Laboratory test results found successfully by doctor ID"
+    )
     public List<LaboratoryTestResultDTO> findAllResultByDoctorId(Long doctorId)
     {
         if (!m_doctorRepository.existsById(doctorId))
@@ -83,6 +99,11 @@ public class LaboratoryTestResultService {
         return validateAndMapToDTO(results);
     }
 
+@Auditable(
+            action = "Find Laboratory Test Result by Patient ID",
+            entity = "LaboratoryTestResult",
+            description = "Laboratory test results found successfully by patient ID"
+    )
     public List<LaboratoryTestResultDTO> findAllResultByPatientId(Long patientId)
     {
         if (!m_patientRepository.existsById(patientId))
@@ -93,6 +114,11 @@ public class LaboratoryTestResultService {
         return validateAndMapToDTO(results);
     }
 
+@Auditable(
+            action = "Find Laboratory Test Result by Laboratory Test ID",
+            entity = "LaboratoryTestResult",
+            description = "Laboratory test results found successfully by laboratory test ID"
+    )
     public List<LaboratoryTestResultDTO> findAllResultByLaboratoryTestId(Long laboratoryTestId)
     {
         if (!m_laboratoryTestRepository.existsById(laboratoryTestId))
@@ -103,6 +129,11 @@ public class LaboratoryTestResultService {
         return validateAndMapToDTO(results);
     }
 
+    @Auditable(
+            action = "Find All Laboratory Test Results",
+            entity = "LaboratoryTestResult",
+            description = "All laboratory test results found successfully"
+    )
     public List<LaboratoryTestResultDTO> findAllLaboratoryTestResults()
     {
         var results = m_laboratoryTestResultRepository.findAll();
@@ -111,6 +142,11 @@ public class LaboratoryTestResultService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Update Laboratory Test Result",
+            entity = "LaboratoryTestResult",
+            description = "Laboratory test result updated successfully"
+    )
     public LaboratoryTestResultDTO updateLaboratoryTestResult(String laboratoryTestResultId, LaboratoryTestResultRequest request)
     {
         var result = m_laboratoryTestResultRepository.findById(laboratoryTestResultId)
@@ -126,6 +162,11 @@ public class LaboratoryTestResultService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete Laboratory Test Result by ID",
+            entity = "LaboratoryTestResult",
+            description = "Laboratory test result deleted successfully"
+    )
     public void deleteLaboratoryTestResultById(String laboratoryTestResultId)
     {
         if (!m_laboratoryTestResultRepository.existsById(laboratoryTestResultId))
@@ -135,6 +176,11 @@ public class LaboratoryTestResultService {
     }
 
     @Transactional
+    @Auditable(
+            action = "Delete All Laboratory Test Results",
+            entity = "LaboratoryTestResult",
+            description = "All laboratory test results deleted successfully"
+    )
     public void deleteAllLaboratoryTestResults()
     {
         m_laboratoryTestResultRepository.deleteAll();

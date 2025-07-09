@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.response.AuthResponse;
 import com.doganmehmet.app.entity.JwtToken;
 import com.doganmehmet.app.exception.ApiException;
@@ -21,6 +22,10 @@ public class RefreshTokenService {
     private final JWTUtil m_jwtUtil;
     private final IUserRepository m_userRepository;
 
+    @Auditable(
+            action = "New Access and Refresh Tokens Generated",
+            entity = "RefreshToken",
+            description = "Access and Refresh tokens generated successfully")
     public AuthResponse refreshToken(String refreshToken)
     {
         var getRefreshToken = m_refreshTokenRepository.findByRefreshToken((refreshToken))

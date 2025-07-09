@@ -1,5 +1,6 @@
 package com.doganmehmet.app.service;
 
+import com.doganmehmet.app.audit.Auditable;
 import com.doganmehmet.app.dto.request.RegisterRequest;
 import com.doganmehmet.app.dto.response.RegisterResponse;
 import com.doganmehmet.app.entity.User;
@@ -22,6 +23,10 @@ public class RegisterService {
     private final PasswordEncoder m_passwordEncoder;
     private final IUserMapper m_userMapper;
 
+    @Auditable(
+            action = "User Registration",
+            description = "User registered successfully"
+    )
     public RegisterResponse register(RegisterRequest registerRequest)
     {
         if (m_userRepository.findByUsername(registerRequest.getUsername()).isPresent())
