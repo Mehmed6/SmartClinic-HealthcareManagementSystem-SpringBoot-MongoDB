@@ -1,5 +1,6 @@
 package com.doganmehmet.app.config;
 
+import com.doganmehmet.app.exception.CustomAccessDeniedHandler;
 import com.doganmehmet.app.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,13 +22,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final UserDetailsService m_userDetailsService;
     private final JwtAuthenticationFilter m_jwtAuthenticationFilter;
     private final String LOGIN = "/api/v1/auth/login";
-    private final String REGISTER = "/register/**";
+    private final String REGISTER = "/api/v1/register";
     private final String REFRESH_TOKEN = "/api/v1/auth/refresh-token";
+    private final CustomAccessDeniedHandler m_customAccessDeniedHandler;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
@@ -37,6 +41,8 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(m_customAccessDeniedHandler))
                 .addFilterBefore(m_jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
